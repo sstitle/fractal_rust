@@ -1,21 +1,24 @@
-pub fn main() -> iced::Result {
-    iced::run("A cool counter", update, view)
-}
+use gtk4 as gtk;
+use gtk::prelude::*;
+use gtk::{glib, Application, ApplicationWindow};
 
-fn update(counter: &mut u64, message: Message) {
-    match message {
-        Message::Increment => *counter += 1,
-    }
-}
+fn main() -> glib::ExitCode {
+    let app = Application::builder()
+        .application_id("org.example.HelloWorld")
+        .build();
 
-use iced::widget::{button, text};
-use iced::Element;
+    app.connect_activate(|app| {
+        // We create the main window.
+        let window = ApplicationWindow::builder()
+            .application(app)
+            .default_width(320)
+            .default_height(200)
+            .title("Hello, World!")
+            .build();
 
-fn view(counter: &u64) -> Element<Message> {
-    button(text(counter)).on_press(Message::Increment).into()
-}
+        // Show the window.
+        window.present();
+    });
 
-#[derive(Debug, Clone)]
-enum Message {
-    Increment,
+    app.run()
 }
