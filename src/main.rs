@@ -14,7 +14,7 @@ fn main() -> glib::ExitCode {
             .application(app)
             .default_width(320)
             .default_height(200)
-            .title("Hello, World!")
+            .title("Counter")
             .build();
 
         // Create a vertical box to hold the label and buttons.
@@ -26,9 +26,9 @@ fn main() -> glib::ExitCode {
         vbox.set_halign(Align::Center);
         vbox.set_valign(Align::Center);
 
-        // Create a label with large font.
+        // Create a label with large font and initial color.
         let label = Label::new(Some("0"));
-        label.set_css_classes(&["large-font"]);
+        label.set_markup("<span size='xx-large' foreground='black'>0</span>");
         vbox.append(&label);
 
         // Create an increment button.
@@ -40,8 +40,11 @@ fn main() -> glib::ExitCode {
             let label = label.clone();
             move |_| {
                 let current_value: i32 = label.text().parse().unwrap_or(0);
-                label.set_text(&(current_value + 1).to_string());
-                change_label_color(&label);
+                label.set_markup(&format!(
+                    "<span size='xx-large' foreground='{}'>{}</span>",
+                    random_color(),
+                    current_value + 1
+                ));
             }
         });
 
@@ -54,8 +57,11 @@ fn main() -> glib::ExitCode {
             let label = label.clone();
             move |_| {
                 let current_value: i32 = label.text().parse().unwrap_or(0);
-                label.set_text(&(current_value - 1).to_string());
-                change_label_color(&label);
+                label.set_markup(&format!(
+                    "<span size='xx-large' foreground='{}'>{}</span>",
+                    random_color(),
+                    current_value - 1
+                ));
             }
         });
 
@@ -67,8 +73,7 @@ fn main() -> glib::ExitCode {
         reset_button.connect_clicked({
             let label = label.clone();
             move |_| {
-                label.set_text("0");
-                change_label_color(&label);
+                label.set_markup("<span size='xx-large' foreground='black'>0</span>");
             }
         });
 
@@ -82,13 +87,12 @@ fn main() -> glib::ExitCode {
     app.run()
 }
 
-fn change_label_color(label: &Label) {
+fn random_color() -> String {
     let mut rng = rand::rng();
-    let color = format!(
-        "rgb({}, {}, {})",
+    format!(
+        "#{:02X}{:02X}{:02X}",
         rng.random_range(0..256),
         rng.random_range(0..256),
         rng.random_range(0..256)
-    );
-    label.set_css_classes(&[&format!("color-{}", color)]);
+    )
 }
