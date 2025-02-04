@@ -1,5 +1,6 @@
-# fractal_rust
-Fractal generation using Rust programming language
+# rust_gtk
+
+An example of a GUI using Rust and GTK.
 
 Note: This project only support MacOS and Linux
 
